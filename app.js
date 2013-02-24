@@ -32,7 +32,8 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/admin', routes.admin);
-app.post('/syncdb', routes.syncdb);
+app.post('/load-cards', routes.load_cards);
+app.post('/load-superheroes', routes.load_superheroes);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){

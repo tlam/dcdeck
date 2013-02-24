@@ -1,26 +1,30 @@
 var fs = require('fs')
   , Game = require('../models/game.js')
+  , Card = require('../models/card.js')
   , Superhero = require('../models/superhero.js');
 /*
  * GET home page.
  */
 
-exports.index = function(req, res){
+exports.index = function(req, res) {
   res.render('index', { title: 'Express' });
 };
 
-exports.admin = function(req, res){
+exports.admin = function(req, res) {
   Superhero.find({}, function(err, superheroes) {
-    console.log(superheroes);
-    var context = {
-      superheroes: superheroes,
-      title: 'Admin'
-    };
-    res.render('admin', context);
+    Card.find({}, function(err, cards) {
+      var context = {
+        cards: cards,
+        superheroes: superheroes,
+        title: 'Admin'
+      };
+      res.render('admin', context);
+    });
   });
 };
 
-exports.syncdb = function(req, res){
+exports.load_superheroes = function(req, res) {
+  var template = 'load_superheroes';
   Superhero.count({}, function(err, count) {
     if (count == 0) {
       var array = fs.readFileSync('models/fixtures/superheroes.csv').toString().split('\n');
@@ -35,10 +39,38 @@ exports.syncdb = function(req, res){
         });
         superhero.save();
       }
-      res.render('syncdb', {title: 'Number of superheroes: ' + array.length});
+      res.render(template, {title: 'Number of new superheroes: ' + array.length});
     }
     else {
-      res.render('syncdb', {title: 'Number of superheroes: ' + count});
+      res.render(template, {title: 'Number of existing superheroes: ' + count});
     }
   });
 };
+
+exports.load_cards = function(req, res) {
+  var template = 'load_cards';
+  Card.count({}, function(err, count) {
+    if (count == 0) {
+      var array = fs.readFileSync('models/fixtures/cards.csv').toString().split('\n');
+      for (i in array) {
+        if (array[i] == '') {
+          continue;
+        }
+        var data = array[i].split(',');
+        var card = new Card({
+          name: data[0],
+          type: data[1],
+          cost: data[2],
+          vp: data[3],
+          power: data[4],
+          description: data[5]
+        });
+        card.save();
+      }
+      res.render(template, {title: 'Cards loaded: ' + array.length});
+    }
+    else {
+      res.render(template, {title: 'Cards already loaded'});
+    }
+  });
+}

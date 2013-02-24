@@ -8,5 +8,15 @@ block content
     each superhero in superheroes
       div #{superhero.name} - #{superhero.description}
 
-  form(action='/syncdb', method='post')
-    input(type='submit', value='Sync DB')
+  if cards
+    h3 Cards
+    each card in cards
+      div #{card.name} - #{card.description}
+
+  form(action='/load-superheroes', method='post')
+    p
+      input(type='submit', value='Load Superheroes')
+
+  form(action='/load-cards', method='post')
+    p
+      input(type='submit', value='Load Cards')
