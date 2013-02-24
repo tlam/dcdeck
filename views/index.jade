@@ -2,6 +2,47 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
 
   button#start Start
+
+  nav#top-cards
+    section
+      h3 Super-Villains
+
+      <script id="super-villains-template" type="text/x-handlerbars">
+      <ul>
+      {{#each villains}}
+      <li>{{this.name}}</li>
+      {{/each}}
+      </ul>
+      </script>
+      div#super-villains-output
+
+    section
+      h3 Kick
+      button#take-kick Draw
+
+    section
+      h3 Weakness
+      button#take-kick Draw
+
+    section
+      h3 Deck
+      button#take-kick Draw
+
+    section
+      h3 Trash
+
+  h3 Line-up
+
+  nav#player-cards
+    section
+      h3 Discard
+
+    section
+      h3 Deck
+
+    section
+      h3 Hand
+
+

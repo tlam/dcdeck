@@ -1,8 +1,22 @@
 body {
-  padding: 50px;
+  padding: 0 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+nav#top-cards, nav#player-cards {
+  overflow: auto;
+}
+
+nav#top-cards section {
+  float: left;
+  width: 15em;
+}
+
+nav#player-cards section {
+  float: left;
+  width: 10em;
 }
