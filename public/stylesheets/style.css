@@ -7,7 +7,11 @@ a {
   color: #00B7FF;
 }
 
-nav#top-cards, nav#player-cards {
+button#start {
+  margin-left: 5em;
+}
+
+nav#top-cards, nav.player-cards {
   overflow: auto;
 }
 
@@ -16,7 +20,24 @@ nav#top-cards section {
   width: 15em;
 }
 
-nav#player-cards section {
+nav.player-cards section {
   float: left;
   width: 10em;
+}
+
+nav.player-cards section.hand {
+  width: auto;
+}
+
+div.hand {
+  overflow: auto;
+}
+
+div.hand div.card {
+  border: 1px solid black;
+  float: left;
+  height: 10em;
+  margin-right: 1em;
+  padding: 0.2em;
+  width: 8em;
 }

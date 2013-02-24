@@ -7,7 +7,11 @@ var fs = require('fs')
  */
 
 exports.index = function(req, res) {
-  res.render('index', { title: 'DC Deck' });
+  var context = {
+    players: ['Player 1', 'Player 2'],
+    title: 'DC Deck'
+  };
+  res.render('index', context);
 };
 
 exports.admin = function(req, res) {

@@ -2,20 +2,12 @@ extends layout
 
 block content
   h1= title
-
-  button#start Start
+    button#start Start
 
   nav#top-cards
     section
       h3 Super-Villains
 
-      <script id="super-villains-template" type="text/x-handlerbars">
-      <ul>
-      {{#each villains}}
-      <li>{{this.name}}</li>
-      {{/each}}
-      </ul>
-      </script>
       div#super-villains-output
 
     section
@@ -35,14 +27,41 @@ block content
 
   h3 Line-up
 
-  nav#player-cards
-    section
-      h3 Discard
+  each player, i in players
+    nav.player-cards
+      section
+        h3 Superhero
+        div(id="superhero-output-#{i}")
 
-    section
-      h3 Deck
+      section
+        h3 Discard
 
-    section
-      h3 Hand
+      section
+        h3 Deck
+
+      section.hand
+        h3 Hand - #{player}
+        div.hand
+          div(id="hand-output-#{i}")
 
 
+  <script id="super-villains-template" type="text/x-handlerbars">
+  <ul>
+  {{#each villains}}
+  <li>{{this.name}}</li>
+  {{/each}}
+  </ul>
+  </script>
+
+  <script id="superhero-template" type="text/x-handlerbars">
+  {{#with superhero}}
+  <div>{{name}}</div>
+  <p><em>{{description}}</em></p>
+  {{/with}}
+  </script>
+
+  <script id="hand-template" type="text/x-handlerbars">
+  {{#each cards}}
+  <div class="card">{{this.name}}</div>
+  {{/each}}
+  </script>
