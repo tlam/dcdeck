@@ -8,9 +8,12 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , sio = require('socket.io');
 
-var app = express();
+var app = express()
+  , server = http.createServer(app)
+  , io = require('./sockets').listen(server);
 mongoose.connect('mongodb://localhost/dcdeck');
 
 app.configure(function(){
@@ -36,6 +39,7 @@ app.post('/load-cards', routes.load_cards);
 app.post('/load-superheroes', routes.load_superheroes);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
+server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
