@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+
+  if superheroes
+    h3 Superheroes
+    each superhero in superheroes
+      div #{superhero.name} - #{superhero.description}
+
+  form(action='/syncdb', method='post')
+    input(type='submit', value='Sync DB')

@@ -7,9 +7,11 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , mongoose = require('mongoose');
 
 var app = express();
+mongoose.connect('mongodb://localhost/dcdeck');
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -27,7 +29,10 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+
 app.get('/', routes.index);
+app.get('/admin', routes.admin);
+app.post('/syncdb', routes.syncdb);
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
