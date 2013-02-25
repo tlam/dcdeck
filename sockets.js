@@ -80,7 +80,15 @@ module.exports.listen = function(app) {
           });
         });
       });
-    });
+
+      var playing_cards = ['Equipment', 'Hero', 'Location', 'Superpower', 'Villain'];
+      Card.find().where('type').in(playing_cards).exec(function(err, cards) {
+        shuffle(cards);
+        io.sockets.emit('lineup', {
+          lineup: cards
+        });
+      });
+    }); // end start game
   });
 
   return io;

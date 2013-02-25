@@ -26,6 +26,7 @@ block content
       h3 Trash
 
   h3 Line-up
+  div#lineup-output
 
   each player, i in players
     nav.player-cards
@@ -45,23 +46,31 @@ block content
           div(id="hand-output-#{i}")
 
 
-  <script id="super-villains-template" type="text/x-handlerbars">
-  <ul>
-  {{#each villains}}
-  <li>{{this.name}}</li>
-  {{/each}}
-  </ul>
-  </script>
+  script(id="super-villains-template", type="text/x-handlerbars").
+    <ul>
+    {{#each villains}}
+      <li>{{this.name}}</li>
+    {{/each}}
+    </ul>
 
-  <script id="superhero-template" type="text/x-handlerbars">
-  {{#with superhero}}
-  <div>{{name}}</div>
-  <p><em>{{description}}</em></p>
-  {{/with}}
-  </script>
+  script(id="superhero-template", type="text/x-handlerbars").
+    {{#with superhero}}
+      <div>{{name}}</div>
+      <p><em>{{description}}</em></p>
+    {{/with}}
 
-  <script id="hand-template" type="text/x-handlerbars">
-  {{#each cards}}
-  <div class="card">{{this.name}}</div>
-  {{/each}}
-  </script>
+  script(id="hand-template", type="text/x-handlerbars").
+    {{#each cards}}
+      <div class="card">{{this.name}}</div>
+    {{/each}}
+
+  script(id="lineup-template", type="text/x-handlebars").
+    {{#each cards}}
+      <div class="card">
+        {{this.name}}
+        <div class="description">{{this.description}}</div>
+        <div>Power:{{this.power}}</div>
+        <div>Cost:{{this.cost}}</div>
+        <div>VP:{{this.vp}}</div>
+      </div>
+    {{/each}}

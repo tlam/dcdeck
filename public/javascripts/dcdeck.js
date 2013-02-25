@@ -33,6 +33,15 @@ socket.on('starting cards', function(data) {
   }
 });
 
+socket.on('lineup', function(data) {
+  var lineup = data.lineup;
+  var source = $("#lineup-template").html();
+  var template = Handlebars.compile(source);
+  var context = {cards: lineup.slice(0, 5)};
+  var html = template(context);
+  $("div#lineup-output").html(html);
+});
+
 $(document).ready(function() {
   $('button#start').click(function() {
     socket.emit('start game', {});

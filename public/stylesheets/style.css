@@ -29,15 +29,24 @@ nav.player-cards section.hand {
   width: auto;
 }
 
-div.hand {
+div.hand, div#lineup-output {
   overflow: auto;
 }
 
-div.hand div.card {
+div.hand div.card, div#lineup-output div.card  {
   border: 1px solid black;
   float: left;
   height: 10em;
   margin-right: 1em;
   padding: 0.2em;
   width: 8em;
+}
+
+div#lineup-output div.card {
+  height: 11em;
+  width: 10em;
+}
+
+div.card div.description {
+  font-size: 0.8em;
 }

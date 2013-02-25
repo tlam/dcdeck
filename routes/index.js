@@ -67,7 +67,7 @@ exports.load_cards = function(req, res) {
           cost: data[2],
           vp: data[3],
           power: data[4],
-          description: data[5]
+          description: data[5].replace(/;/g, ',').replace("'", '')
         });
         card.save();
       }
