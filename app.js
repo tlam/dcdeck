@@ -36,6 +36,7 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/admin', routes.admin);
 app.post('/load-cards', routes.load_cards);
+app.post('/load-players', routes.load_players);
 app.post('/load-superheroes', routes.load_superheroes);
 app.get('/users', user.list);
 

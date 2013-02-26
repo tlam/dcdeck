@@ -44,6 +44,7 @@ socket.on('lineup', function(data) {
 
 $(document).ready(function() {
   $('button#start').click(function() {
+    socket.emit('reset game', {});
     socket.emit('start game', {});
   });
 });

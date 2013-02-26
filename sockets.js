@@ -1,18 +1,8 @@
-var Card = require('./models/card.js');
-var Superhero = require('./models/superhero.js');
-var sio = require('socket.io');
-
-
-function shuffle(cards) {
-  var len = cards.length;
-  var i = len;
-  while (i--) {
-    var p = parseInt(Math.random()*len);
-    var t = cards[i];
-    cards[i] = cards[p];
-    cards[p] = t;
-  }
-}
+var sio = require('socket.io')
+  , utils = require('./lib/utils.js')
+  , Card = require('./models/card.js')
+  , Player = require('./models/player.js')
+  , Superhero = require('./models/superhero.js');
 
 
 module.exports.listen = function(app) {
@@ -31,7 +21,7 @@ module.exports.listen = function(app) {
             ordered_villains.push(super_villains[i]);
           }
         }
-        shuffle(ordered_villains);
+        utils.shuffle(ordered_villains);
         // Insert Ra's Al-Ghul at the beginning of array
         ordered_villains.splice(0, 0, rasal_ghul);
         io.sockets.emit('super villains', {
@@ -40,9 +30,15 @@ module.exports.listen = function(app) {
       });
 
       Superhero.find({}, function(err, superheroes) {
-        shuffle(superheroes);
-        io.sockets.emit('superheroes', {
-          superheroes: superheroes
+        utils.shuffle(superheroes);
+        Player.find({}, function(err, players) {
+          for (var i=0; i<players.length; i++) {
+            superheroes[i].player = players[i];
+            superheroes[i].save()
+          }
+          io.sockets.emit('superheroes', {
+            superheroes: superheroes
+          });
         });
       });
 
@@ -66,7 +62,7 @@ module.exports.listen = function(app) {
             var player_vul = vulnerabilities.slice(vul_start_index, vul_end_index);
 
             var cards = player_punch.concat(player_vul);
-            shuffle(cards);
+            utils.shuffle(cards);
             starting_cards.push(cards);
 
             punch_start_index = punch_end_index;
@@ -83,12 +79,34 @@ module.exports.listen = function(app) {
 
       var playing_cards = ['Equipment', 'Hero', 'Location', 'Superpower', 'Villain'];
       Card.find().where('type').in(playing_cards).exec(function(err, cards) {
-        shuffle(cards);
+        utils.shuffle(cards);
         io.sockets.emit('lineup', {
           lineup: cards
         });
       });
     }); // end start game
+
+
+    socket.on('reset game', function(data) {
+      Card.find({}, function(err, cards) {
+        cards.map(function(card) {
+          card.player = null;
+          card.save();
+        });
+      });
+
+      // Only default player 1 as the starting player
+      Player.find({}, function(err, players) {
+        players.map(function(player) {
+          if (player.name == 'Player 1') {
+            player.is_turn = true;
+          }
+          else {
+            player.is_turn = false;
+          }
+        });
+      });
+    });
   });
 
   return io;

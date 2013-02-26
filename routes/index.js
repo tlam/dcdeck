@@ -1,6 +1,7 @@
 var fs = require('fs')
   , Game = require('../models/game.js')
   , Card = require('../models/card.js')
+  , Player = require('../models/player.js')
   , Superhero = require('../models/superhero.js');
 /*
  * GET home page.
@@ -75,6 +76,26 @@ exports.load_cards = function(req, res) {
     }
     else {
       res.render(template, {title: 'Cards already loaded'});
+    }
+  });
+}
+
+exports.load_players = function(req, res) {
+  var template = 'load_players';
+  Player.count({}, function(err, count) {
+    if (count == 0) {
+      // Default to the creation of 2 players
+      for (var i=0; i<2; i++) {
+        var player = new Player({
+          name: 'Player ' + i+1,
+          is_turn: false
+        });
+        player.save()
+      }
+      res.render(template, {title: '2 Players loaded'});
+    }
+    else {
+      res.render(template, {title: 'Players already loaded'});
     }
   });
 }
