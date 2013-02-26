@@ -2,7 +2,8 @@ var sio = require('socket.io')
   , utils = require('./lib/utils.js')
   , Card = require('./models/card.js')
   , Player = require('./models/player.js')
-  , Superhero = require('./models/superhero.js');
+  , Superhero = require('./models/superhero.js')
+  , SuperVillainDeck = require('./models/supervillain_deck.js');
 
 
 module.exports.listen = function(app) {
@@ -24,8 +25,14 @@ module.exports.listen = function(app) {
         utils.shuffle(ordered_villains);
         // Insert Ra's Al-Ghul at the beginning of array
         ordered_villains.splice(0, 0, rasal_ghul);
-        io.sockets.emit('super villains', {
-          super_villains: ordered_villains
+        var supervillain_deck = new SuperVillainDeck();
+        ordered_villains.map(function(card) {
+          supervillain_deck.cards.push(card);
+        });
+        supervillain_deck.save(function(err, deck) {
+          io.sockets.emit('super villains', {
+            super_villains: ordered_villains
+          });
         });
       });
 
@@ -95,15 +102,19 @@ module.exports.listen = function(app) {
         });
       });
 
+      SuperVillainDeck.remove({}).exec();
+
       // Only default player 1 as the starting player
       Player.find({}, function(err, players) {
         players.map(function(player) {
+          player.superhero = [];
           if (player.name == 'Player 1') {
             player.is_turn = true;
           }
           else {
             player.is_turn = false;
           }
+          player.save();
         });
       });
     });
