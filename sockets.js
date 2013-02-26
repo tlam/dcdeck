@@ -33,8 +33,8 @@ module.exports.listen = function(app) {
         utils.shuffle(superheroes);
         Player.find({}, function(err, players) {
           for (var i=0; i<players.length; i++) {
-            superheroes[i].player = players[i];
-            superheroes[i].save()
+            players[i].superhero.push(superheroes[i]);
+            players[i].save();
           }
           io.sockets.emit('superheroes', {
             superheroes: superheroes

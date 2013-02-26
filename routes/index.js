@@ -86,8 +86,9 @@ exports.load_players = function(req, res) {
     if (count == 0) {
       // Default to the creation of 2 players
       for (var i=0; i<2; i++) {
+        var num = i + 1;
         var player = new Player({
-          name: 'Player ' + i+1,
+          name: 'Player ' + num,
           is_turn: false
         });
         player.save()
