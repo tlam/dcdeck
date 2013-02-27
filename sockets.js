@@ -34,7 +34,7 @@ module.exports.listen = function(app) {
         });
         supervillain_deck.save(function(err, deck) {
           io.sockets.emit('super villains', {
-            super_villains: ordered_villains
+            super_villain: supervillain_deck.cards[0]
           });
         });
       });

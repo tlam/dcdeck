@@ -12,7 +12,7 @@ button#start {
 }
 
 nav#top-cards, nav.player-cards {
-  overflow: auto;
+  overflow: hidden;
 }
 
 nav#top-cards section {
@@ -30,7 +30,7 @@ nav.player-cards section.hand {
 }
 
 div.hand, div#lineup-output {
-  overflow: auto;
+  overflow: hidden;
 }
 
 div.hand div.card, div#lineup-output div.card  {
@@ -43,7 +43,7 @@ div.hand div.card, div#lineup-output div.card  {
 }
 
 div#lineup-output div.card {
-  height: 11em;
+  height: 12em;
   width: 10em;
 }
 
@@ -57,4 +57,26 @@ div#lineup-output section {
 
 div#lineup-output section div.card {
   float: none;
+}
+
+div.card div.name {
+  font-weight: bold;
+  text-align: center;
+}
+
+div.card div.middle {
+  height: 9.3em;
+  margin-top: 0.5em;
+}
+
+div.card div.bottom {
+  overflow: hidden;
+}
+
+div.card div.bottom div.vp {
+  float: left;
+}
+
+div.card div.bottom div.cost {
+  float: right;
 }

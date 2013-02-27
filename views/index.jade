@@ -32,21 +32,24 @@ block content
   div#players-output
 
   script(id="super-villains-template", type="text/x-handlerbars").
-    <ul>
-    {{#each villains}}
-      <li>{{this.name}}</li>
-    {{/each}}
-    </ul>
+    {{#with villain }}
+    <div>{{this.name}}</div>
+    <input card="{{this._id}}" type="button" value="Defeat" />
+    {{/with}}
 
   script(id="lineup-template", type="text/x-handlebars").
     {{#each cards}}
     <section>
       <div class="card">
-        {{this.name}}
-        <div class="description">{{this.description}}</div>
-        <div>Power:{{this.power}}</div>
-        <div>Cost:{{this.cost}}</div>
-        <div>VP:{{this.vp}}</div>
+        <div class="name">{{this.name}}</div>
+        <div class="middle">
+          <div>Power:{{this.power}}</div>
+          <div class="description">{{this.description}}</div>
+        </div>
+        <div class="bottom">
+          <div class="vp">VP:{{this.vp}}</div>
+          <div class="cost">Cost:{{this.cost}}</div>
+        </div>
       </div>
       <input card="{{this._id}}" type="button" value="Buy" />
     </section>
@@ -65,12 +68,23 @@ block content
         </section>
         <section>
           <h3>Deck</h3>
+          <input class="end-turn" player="{{this._id}}" type="button" value="End Turn" />
         </section>
         <section class="hand">
           <h3>Hand - {{this.name}} {{#if this.is_turn }}(<em>current turn</em>){{/if}}</h3>
           <div class="hand">
           {{#each this.hand}}
-            <div class="card">{{this.name}}</div>
+          <div class="card">
+            <div class="name">{{this.name}}</div>
+            <div class="middle">
+              <div>Power:{{this.power}}</div>
+              <div class="description">{{this.description}}</div>
+            </div>
+            <div class="bottom">
+              <div class="vp">VP:{{this.vp}}</div>
+              <div class="cost">Cost:{{this.cost}}</div>
+            </div>
+          </div>
           {{/each}}
           </div>
         </section>
