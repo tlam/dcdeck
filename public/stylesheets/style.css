@@ -50,3 +50,11 @@ div#lineup-output div.card {
 div.card div.description {
   font-size: 0.8em;
 }
+
+div#lineup-output section {
+  float: left;
+}
+
+div#lineup-output section div.card {
+  float: none;
+}

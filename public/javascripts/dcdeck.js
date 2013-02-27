@@ -9,30 +9,6 @@ socket.on('super villains', function(data) {
   $("#super-villains-output").html(html);
 });
 
-socket.on('superheroes', function(data) {
-  console.log(data);
-  var superheroes = data.superheroes;
-  var source = $("#superhero-template").html();
-  var template = Handlebars.compile(source);
-  for (i=0; i<superheroes.length; i++) {
-    var context = {superhero: superheroes[i]};
-    var html = template(context);
-    $("div#superhero-output-" + i).html(html);
-  }
-});
-
-socket.on('starting cards', function(data) {
-  console.log(data);
-  var starting_cards = data.starting_cards;
-  var source = $("#hand-template").html();
-  var template = Handlebars.compile(source);
-  for (i=0; i<starting_cards.length; i++) {
-    var context = {cards: starting_cards[i].slice(0, 5)};
-    var html = template(context);
-    $("div#hand-output-" + i).html(html);
-  }
-});
-
 socket.on('lineup', function(data) {
   var lineup = data.lineup;
   var source = $("#lineup-template").html();
@@ -40,6 +16,16 @@ socket.on('lineup', function(data) {
   var context = {cards: lineup.slice(0, 5)};
   var html = template(context);
   $("div#lineup-output").html(html);
+});
+
+socket.on('players', function(data) {
+  var players = data.players;
+  console.log(players);
+  var source = $("#players-template").html();
+  var template = Handlebars.compile(source);
+  var context = {players: players};
+  var html = template(context);
+  $("div#players-output").html(html);
 });
 
 $(document).ready(function() {

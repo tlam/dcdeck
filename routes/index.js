@@ -2,7 +2,7 @@ var fs = require('fs')
   , Game = require('../models/game.js')
   , Card = require('../models/card.js')
   , Player = require('../models/player.js')
-  , Superhero = require('../models/superhero.js');
+  , Superhero = require('../models/superhero.js')
 /*
  * GET home page.
  */
@@ -72,6 +72,7 @@ exports.load_cards = function(req, res) {
         });
         card.save();
       }
+
       res.render(template, {title: 'Cards loaded: ' + array.length});
     }
     else {

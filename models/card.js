@@ -8,7 +8,6 @@ var CardSchema = mongoose.Schema({
   , vp: String
   , power: {type: Number, default: 0}
   , description: String
-  , player: {type: Schema.ObjectId, ref: 'Player'}
   , game_location: String
 });
 

@@ -1,9 +1,12 @@
 var sio = require('socket.io')
   , utils = require('./lib/utils.js')
   , Card = require('./models/card.js')
+  , DCDeck = require('./models/dc_deck.js')
+  , Lineup = require('./models/lineup.js')
   , Player = require('./models/player.js')
   , Superhero = require('./models/superhero.js')
-  , SuperVillainDeck = require('./models/supervillain_deck.js');
+  , SuperVillainDeck = require('./models/supervillain_deck.js')
+  , TrashDeck = require('./models/trash_deck.js');
 
 
 module.exports.listen = function(app) {
@@ -32,19 +35,6 @@ module.exports.listen = function(app) {
         supervillain_deck.save(function(err, deck) {
           io.sockets.emit('super villains', {
             super_villains: ordered_villains
-          });
-        });
-      });
-
-      Superhero.find({}, function(err, superheroes) {
-        utils.shuffle(superheroes);
-        Player.find({}, function(err, players) {
-          for (var i=0; i<players.length; i++) {
-            players[i].superhero.push(superheroes[i]);
-            players[i].save();
-          }
-          io.sockets.emit('superheroes', {
-            superheroes: superheroes
           });
         });
       });
@@ -78,35 +68,69 @@ module.exports.listen = function(app) {
             vul_end_index = vul_start_index + starting_vulnerability;
           }
 
-          io.sockets.emit('starting cards', {
-            starting_cards: starting_cards
+          Superhero.find({}, function(err, superheroes) {
+            utils.shuffle(superheroes);
+            Player.find().sort('name').exec(function(err, players) {
+              var starting_players = [];
+              for (var i=0; i<players.length; i++) {
+                player = players[i];
+                player.superhero.push(superheroes[i]);
+                starting_cards[i].map(function(card, index) {
+                  if (index < 5) {
+                    player.hand.push(card);
+                  }
+                  else {
+                    player.deck.push(card);
+                  }
+                });
+                player.save();
+                starting_players.push(player);
+              }
+              io.sockets.emit('players', {
+                players: starting_players
+              });
+            });
           });
+
         });
       });
 
       var playing_cards = ['Equipment', 'Hero', 'Location', 'Superpower', 'Villain'];
       Card.find().where('type').in(playing_cards).exec(function(err, cards) {
         utils.shuffle(cards);
+        var dc_deck = new DCDeck();
+        var lineup = new Lineup();
+
+        cards.map(function(card, index) {
+          if (index < 5) {
+            lineup.cards.push(card);
+          }
+          else {
+            dc_deck.cards.push(card);
+          }
+        });
+        dc_deck.save();
+        lineup.save();
+
         io.sockets.emit('lineup', {
-          lineup: cards
+          lineup: lineup.cards
         });
       });
     }); // end start game
 
 
     socket.on('reset game', function(data) {
-      Card.find({}, function(err, cards) {
-        cards.map(function(card) {
-          card.player = null;
-          card.save();
-        });
-      });
-
-      SuperVillainDeck.remove({}).exec();
+      DCDeck.remove().exec();
+      Lineup.remove().exec();
+      SuperVillainDeck.remove().exec();
+      TrashDeck.remove().exec();
 
       // Only default player 1 as the starting player
       Player.find({}, function(err, players) {
         players.map(function(player) {
+          player.deck = [];
+          player.discard = [];
+          player.hand = [];
           player.superhero = [];
           if (player.name == 'Player 1') {
             player.is_turn = true;

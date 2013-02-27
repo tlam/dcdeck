@@ -12,6 +12,7 @@ block content
 
     section
       h3 Kick
+      div Cost: 3
       button#take-kick Draw
 
     section
@@ -28,23 +29,7 @@ block content
   h3 Line-up
   div#lineup-output
 
-  each player, i in players
-    nav.player-cards
-      section
-        h3 Superhero
-        div(id="superhero-output-#{i}")
-
-      section
-        h3 Discard
-
-      section
-        h3 Deck
-
-      section.hand
-        h3 Hand - #{player}
-        div.hand
-          div(id="hand-output-#{i}")
-
+  div#players-output
 
   script(id="super-villains-template", type="text/x-handlerbars").
     <ul>
@@ -53,19 +38,9 @@ block content
     {{/each}}
     </ul>
 
-  script(id="superhero-template", type="text/x-handlerbars").
-    {{#with superhero}}
-      <div>{{name}}</div>
-      <p><em>{{description}}</em></p>
-    {{/with}}
-
-  script(id="hand-template", type="text/x-handlerbars").
-    {{#each cards}}
-      <div class="card">{{this.name}}</div>
-    {{/each}}
-
   script(id="lineup-template", type="text/x-handlebars").
     {{#each cards}}
+    <section>
       <div class="card">
         {{this.name}}
         <div class="description">{{this.description}}</div>
@@ -73,4 +48,31 @@ block content
         <div>Cost:{{this.cost}}</div>
         <div>VP:{{this.vp}}</div>
       </div>
+      <input card="{{this._id}}" type="button" value="Buy" />
+    </section>
+    {{/each}}
+
+  script(id="players-template", type="text/x-handlebars").
+    {{#each players}}
+      <nav class="player-cards">
+        <section>
+          <h3>Superhero</h3>
+          <div>{{this.superhero.0.name}}</div>
+          <p><em>{{this.superhero.0.description}}</em></p>
+        </section>
+        <section>
+          <h3>Discard</h3>
+        </section>
+        <section>
+          <h3>Deck</h3>
+        </section>
+        <section class="hand">
+          <h3>Hand - {{this.name}} {{#if this.is_turn }}(<em>current turn</em>){{/if}}</h3>
+          <div class="hand">
+          {{#each this.hand}}
+            <div class="card">{{this.name}}</div>
+          {{/each}}
+          </div>
+        </section>
+      </nav>
     {{/each}}
