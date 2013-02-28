@@ -27,6 +27,10 @@ socket.on('players', function(data) {
   $("div#players-output").html(html);
 });
 
+socket.on('buy msg', function(data) {
+  $('span.lineup-msg').text(data.msg);
+});
+
 $(document).ready(function() {
   $('button#start').click(function() {
     socket.emit('reset game', {});
@@ -36,6 +40,18 @@ $(document).ready(function() {
   $('body').on('click', 'input[type=button].super-villain', function() {
     var card = $(this).attr('card');
     socket.emit('defeat super villain', {
+      card: card
+    });
+  });
+
+  $('body').on('click', 'input[type=button].end-turn', function() {
+    socket.emit('end turn', {
+    });
+  });
+
+  $('body').on('click', 'input[type=button].buy', function() {
+    var card = $(this).attr('card');
+    socket.emit('buy card', {
       card: card
     });
   });

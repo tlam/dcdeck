@@ -161,6 +161,118 @@ module.exports.listen = function(app) {
       });
     }); // defeat super villain
 
+    socket.on('end turn', function(data) {
+      Player.findOne({is_turn: true}, function(err, current_player) {
+        // Empty hand cards into discard pile
+        current_player.hand.map(function(card) {
+          current_player.discard.push(card);
+        });
+        current_player.hand = [];
+        current_player.save();
+     
+        // Take at most 5 cards from the deck or less
+        for (var i=0; i<Math.min(5,current_player.deck.length); i++) {
+          current_player.hand.push(current_player.deck[i]);
+        }
+        current_player.save();
+
+        // Remove the cards taken from the deck
+        current_player.hand.map(function(card) {
+          current_player.deck.id(card.id).remove();
+        });
+        current_player.save();
+     
+        if (current_player.hand.length < 5) {
+          var missing = 5 - current_player.hand.length;
+          var discard = current_player.discard;
+          utils.shuffle(discard);
+          current_player.discard = [];
+          current_player.deck = [];
+          current_player.save();
+          discard.map(function(card) {
+            current_player.deck.push(card);
+          });
+          current_player.save()
+          for (var i=0; i<current_player.deck.length; i++) {
+            if (i == missing) {
+              break;
+            }
+            var card = current_player.deck[i];
+            current_player.hand.push(card);
+            card.remove();
+          }
+          current_player.save();
+        }
+        console.log('DISCARD ' + current_player.discard);
+        // assuming 2 player game
+        Player.findOne({is_turn: false}, function(err, next_player) {
+          next_player.is_turn = true;
+          next_player.save();
+          current_player.is_turn = false;
+          current_player.save();
+          Lineup.findOne({}, function(err, lineup) {
+            if (lineup.cards.length < 5) {
+              var missing = 5 - lineup.cards.length;
+              DCDeck.findOne({}, function(err, dc_deck) {
+                for (var i=0; i<dc_deck.cards.length; i++) {            
+                  if (i == missing) {
+                    break;
+                  }
+                  var card = dc_deck.cards[i];
+                  lineup.cards.push(card);
+                  card.remove();
+                }
+                lineup.save();
+                dc_deck.save();
+                io.sockets.emit('lineup', {
+                  lineup: lineup.cards
+                });
+     
+                Player.find().sort('name').exec(function(err, players) {
+                  io.sockets.emit('players', {
+                    players: players
+                  });
+                });
+              });
+            }
+            else {
+              io.sockets.emit('lineup', {
+                lineup: lineup.cards
+              });
+              Player.find().sort('name').exec(function(err, players) {
+                io.sockets.emit('players', {
+                  players: players
+                });
+              });
+            }
+          });
+        });
+      });
+    }); // end turn
+
+    socket.on('buy card', function(data) {
+      var card_id = data.card;
+      Player.findOne({is_turn: true}, function(err, player) {
+        Lineup.findOne({}, function(err, lineup) {
+          var lineup_card = lineup.cards.id(card_id);
+          var msg = 'Cannot find card';
+          if (lineup_card) {
+            msg = lineup_card.name + ' bought';
+            player.discard.push(lineup_card);
+            player.save();
+            lineup_card.remove();
+            lineup.save();
+          }
+          io.sockets.emit('lineup', {
+            lineup: lineup.cards
+          });
+          io.sockets.emit('buy msg', {
+            msg: msg
+          });
+        });
+      });
+    });
+
   });
 
   return io;

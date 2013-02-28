@@ -26,14 +26,15 @@ block content
     section
       h3 Trash
 
-  h3 Line-up
+  h3 Line-up 
+    span.lineup-msg
   div#lineup-output
 
   div#players-output
 
   script(id="super-villains-template", type="text/x-handlerbars").
-    {{#if villain }}
-      {{#with villain }}
+    {{#if villain}}
+      {{#with villain}}
     <div>{{this.name}}</div>
     <input class="super-villain" card="{{this._id}}" type="button" value="Defeat" />
       {{/with}}
@@ -55,7 +56,7 @@ block content
           <div class="cost">Cost:{{this.cost}}</div>
         </div>
       </div>
-      <input card="{{this._id}}" type="button" value="Buy" />
+      <input class="buy" card="{{this._id}}" type="button" value="Buy" />
     </section>
     {{/each}}
 
@@ -72,7 +73,9 @@ block content
         </section>
         <section>
           <h3>Deck</h3>
+          {{#if this.is_turn}}
           <input class="end-turn" player="{{this._id}}" type="button" value="End Turn" />
+          {{/if}}
         </section>
         <section class="hand">
           <h3>Hand - {{this.name}} {{#if this.is_turn }}(<em>current turn</em>){{/if}}</h3>
