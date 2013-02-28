@@ -32,10 +32,14 @@ block content
   div#players-output
 
   script(id="super-villains-template", type="text/x-handlerbars").
-    {{#with villain }}
+    {{#if villain }}
+      {{#with villain }}
     <div>{{this.name}}</div>
-    <input card="{{this._id}}" type="button" value="Defeat" />
-    {{/with}}
+    <input class="super-villain" card="{{this._id}}" type="button" value="Defeat" />
+      {{/with}}
+    {{else}}
+      <em>Game Over!  All Super-Villains have been defeated!</em>
+    {{/if}}
 
   script(id="lineup-template", type="text/x-handlebars").
     {{#each cards}}

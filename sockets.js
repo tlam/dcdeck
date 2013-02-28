@@ -141,7 +141,26 @@ module.exports.listen = function(app) {
           player.save();
         });
       });
-    });
+    }); // reset game
+
+    socket.on('defeat super villain', function(data) {
+      SuperVillainDeck.findOne({}, function(err, super_villains) {
+        var card = super_villains.cards.id(data.card).remove();
+        Player.findOne({is_turn: true}, function(err, player) {
+          player.discard.push(card);
+          player.save();
+          super_villains.save();
+          var super_villain = null;
+          if (super_villains.cards.length > 0) {
+            super_villain = super_villains.cards[0];
+          }
+          io.sockets.emit('super villains', {
+            super_villain: super_villain
+          });
+        });
+      });
+    }); // defeat super villain
+
   });
 
   return io;

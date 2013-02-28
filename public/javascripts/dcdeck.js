@@ -1,7 +1,6 @@
 var socket = io.connect();
 
 socket.on('super villains', function(data) {
-  console.log(data);
   var source = $("#super-villains-template").html();
   var template = Handlebars.compile(source);
   var context = {villain: data.super_villain};
@@ -32,5 +31,12 @@ $(document).ready(function() {
   $('button#start').click(function() {
     socket.emit('reset game', {});
     socket.emit('start game', {});
+  });
+
+  $('body').on('click', 'input[type=button].super-villain', function() {
+    var card = $(this).attr('card');
+    socket.emit('defeat super villain', {
+      card: card
+    });
   });
 });
