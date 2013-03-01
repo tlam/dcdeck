@@ -35,8 +35,8 @@ block content
   script(id="super-villains-template", type="text/x-handlerbars").
     {{#if villain}}
       {{#with villain}}
-    <div>{{this.name}}</div>
-    <input class="super-villain" card="{{this._id}}" type="button" value="Defeat" />
+      {{> card}}
+      <input class="super-villain" card="{{this._id}}" type="button" value="Defeat" />
       {{/with}}
     {{else}}
       <em>Game Over!  All Super-Villains have been defeated!</em>
@@ -45,18 +45,7 @@ block content
   script(id="lineup-template", type="text/x-handlebars").
     {{#each cards}}
     <section>
-      <div class="card">
-        <div class="name">{{this.name}}</div>
-        <div class="middle">
-          <div>{{this.type}}</div>
-          <div>Power:{{this.power}}</div>
-          <div class="description">{{this.description}}</div>
-        </div>
-        <div class="bottom">
-          <div class="vp">VP:{{this.vp}}</div>
-          <div class="cost">Cost:{{this.cost}}</div>
-        </div>
-      </div>
+      {{> card}}
       <input class="buy" card="{{this._id}}" type="button" value="Buy" />
     </section>
     {{/each}}
@@ -71,8 +60,6 @@ block content
         </section>
         <section>
           <h3>Discard ({{this.discard.length}})</h3>
-        </section>
-        <section>
           <h3>Deck ({{this.deck.length}})</h3>
           {{#if this.is_turn}}
           <input class="end-turn" player="{{this._id}}" type="button" value="End Turn" />
@@ -82,20 +69,23 @@ block content
           <h3>Hand - {{this.name}} {{#if this.is_turn }}(<em>current turn</em>){{/if}}</h3>
           <div class="hand">
           {{#each this.hand}}
-          <div class="card">
-            <div class="name">{{this.name}}</div>
-            <div class="middle">
-              <div>{{this.type}}</div>
-              <div>Power:{{this.power}}</div>
-              <div class="description">{{this.description}}</div>
-            </div>
-            <div class="bottom">
-              <div class="vp">VP:{{this.vp}}</div>
-              <div class="cost">Cost:{{this.cost}}</div>
-            </div>
-          </div>
+            {{> card}}
           {{/each}}
           </div>
         </section>
       </nav>
     {{/each}}
+
+  script(id="card-template", type="text/x-handlebars").
+      <div class="card">
+        <div class="name">{{name}}</div>
+        <div class="middle">
+          <div>{{type}}</div>
+          <div>Power:{{power}}</div>
+          <div class="description">{{description}}</div>
+        </div>
+        <div class="bottom">
+          <div class="vp">VP:{{vp}}</div>
+          <div class="cost">Cost:{{cost}}</div>
+        </div>
+      </div>

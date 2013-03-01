@@ -2,6 +2,7 @@ var sio = require('socket.io')
   , utils = require('./lib/utils.js')
   , Card = require('./models/card.js')
   , DCDeck = require('./models/dc_deck.js')
+  , KickDeck = require('./models/kick_deck.js')
   , Lineup = require('./models/lineup.js')
   , Player = require('./models/player.js')
   , Superhero = require('./models/superhero.js')
@@ -37,6 +38,14 @@ module.exports.listen = function(app) {
             super_villain: supervillain_deck.cards[0]
           });
         });
+      });
+
+      Card.find({name: 'Kick'}, function(err, kicks) {
+        var kick_deck = new KickDeck();
+        kicks.map(function(card) {
+          kick_deck.cards.push(card);
+        });
+        kick_deck.save();
       });
 
       var num_players = 2;
@@ -121,6 +130,7 @@ module.exports.listen = function(app) {
 
     socket.on('reset game', function(data) {
       DCDeck.remove().exec();
+      KickDeck.remove().exec();
       Lineup.remove().exec();
       SuperVillainDeck.remove().exec();
       TrashDeck.remove().exec();
@@ -271,7 +281,34 @@ module.exports.listen = function(app) {
           });
         });
       });
-    });
+    }); // buy card
+
+    socket.on('buy kick', function(data) {
+      KickDeck.findOne({}, function(err, kick_deck) {
+        var kick_card = null;
+        if (kick_deck.cards.length > 0) {
+          kick_card = kick_deck.cards[0];
+        }
+
+        if (kick_card != null) {
+          Player.findOne({is_turn: true}, function(err, player) {
+            player.discard.push(kick_card);
+            player.save();
+            kick_deck.cards.id(kick_card.id).remove();
+            kick_deck.save();
+            var msg = 'Kick bought by ' + player.name;
+            io.sockets.emit('buy msg', {
+              msg: msg
+            });
+          });
+        }
+        else {
+          io.sockets.emit('buy msg', {
+            msg: 'No more Kick in the deck'
+          });
+        }
+      });
+    }); // defeat super villain
 
   });
 

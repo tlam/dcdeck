@@ -1,7 +1,7 @@
 var socket = io.connect();
 
 socket.on('super villains', function(data) {
-  var source = $("#super-villains-template").html();
+  var source = $('#super-villains-template').html();
   var template = Handlebars.compile(source);
   var context = {villain: data.super_villain};
   var html = template(context);
@@ -32,9 +32,16 @@ socket.on('buy msg', function(data) {
 });
 
 $(document).ready(function() {
+  var card_source = $('#card-template').html();
+  Handlebars.registerPartial('card', card_source);
+
   $('button#start').click(function() {
     socket.emit('reset game', {});
     socket.emit('start game', {});
+  });
+
+  $('button#take-kick').click(function() {
+    socket.emit('buy kick', {});
   });
 
   $('body').on('click', 'input[type=button].super-villain', function() {

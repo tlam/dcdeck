@@ -33,18 +33,16 @@ div.hand, div#lineup-output {
   overflow: hidden;
 }
 
-div.hand div.card, div#lineup-output div.card  {
+div.card {
   border: 1px solid black;
-  float: left;
-  height: 10em;
-  margin-right: 1em;
+  height: 12em;
   padding: 0.2em;
-  width: 8em;
+  width: 10em;
 }
 
-div#lineup-output div.card {
-  height: 12em;
-  width: 10em;
+div.hand div.card, div#lineup-output div.card  {
+  float: left;
+  margin-right: 1em;
 }
 
 div.card div.description {
