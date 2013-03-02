@@ -8,12 +8,12 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , mongoose = require('mongoose')
-  , sio = require('socket.io');
+  , mongoose = require('mongoose');
 
 var app = express()
   , server = http.createServer(app)
   , io = require('./sockets').listen(server);
+
 mongoose.connect('mongodb://localhost/dcdeck');
 
 app.configure(function(){
