@@ -14,7 +14,12 @@ var app = express()
   , server = http.createServer(app)
   , io = require('./sockets').listen(server);
 
-mongoose.connect('mongodb://localhost/dcdeck');
+var mongo_uri = 
+  process.env.MONGODB_URI ||
+  process.env.MONGOLAB_URI ||
+  'mongodb://localhost/dcdeck';
+var mongo_options = {db: {safe: true}};
+mongoose.connect(mongo_uri, mongo_options);
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
