@@ -14,6 +14,13 @@ var app = express()
   , server = http.createServer(app)
   , io = require('./sockets').listen(server);
 
+if (app.settings.env == 'production') {
+  io.configure(function() {
+    io.set('transports', ['xhr-polling']);
+    io.set('polling duration', 10);
+  });
+}
+
 var mongo_uri = 
   process.env.MONGODB_URI ||
   process.env.MONGOLAB_URI ||
