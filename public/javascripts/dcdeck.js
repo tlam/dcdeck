@@ -40,6 +40,10 @@ $(document).ready(function() {
     socket.emit('start game', {});
   });
 
+  $('button#resume').click(function() {
+    socket.emit('resume game', {});
+  });
+
   $('button#take-kick').click(function() {
     socket.emit('buy kick', {});
   });

@@ -310,6 +310,28 @@ module.exports.listen = function(app) {
       });
     }); // defeat super villain
 
+    socket.on('resume game', function(data) {
+      SuperVillainDeck.findOne({}, function(err, super_villains) {
+        if (super_villains.cards.length > 0) {
+          Player.find().sort('name').exec(function(err, players) {
+            Lineup.findOne({}, function(err, lineup) {
+              if (lineup.cards.length > 0) {
+                io.sockets.emit('super villains', {
+                  super_villain: super_villains.cards[0]
+                });
+                io.sockets.emit('players', {
+                  players: players
+                });
+                io.sockets.emit('lineup', {
+                  lineup: lineup.cards
+                });
+              }
+            });
+          });   
+        }         
+      });       
+    }); // resume game
+
   });
 
   return io;
